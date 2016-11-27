@@ -59,7 +59,13 @@ class ASMVerticle() : AbstractVerticle() {
                 val cr = ClassReader(FileInputStream("bin/$className.class"))
                 val asmStream = ByteArrayOutputStream()
                 cr.accept(TraceClassVisitor(null, ASMifier(), PrintWriter(asmStream)), 2)
-                output = asmStream.toString()
+                var depth = 0
+                output = asmStream.toString().split("\n").map {
+                    if (it.trim().endsWith("}")) depth--
+                    val s = " ".repeat(depth * 4) + it
+                    if (it.trim().endsWith("{")) depth++
+                    s
+                }.joinToString("\n")
             } else {
                 // javac returned with an error, return the output & error streams
                 output = outputStream.toString() + "\n\n" + errorStream.toString()
