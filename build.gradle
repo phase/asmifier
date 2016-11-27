@@ -1,0 +1,31 @@
+group 'xyz.jadonfowler'
+version '0.0.0'
+
+buildscript {
+    ext.kotlin_version = '1.0.5-2'
+
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+apply plugin: 'kotlin'
+apply plugin: 'application'
+
+mainClassName = "xyz.jadonfowler.asmifier.ASMifierKt"
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    compile "io.vertx:vertx-core:3.3.3"
+    compile "io.vertx:vertx-web:3.3.3"
+    compile "org.ow2.asm:asm:5.0.3"
+    compile "org.ow2.asm:asm-util:5.0.3"
+}
