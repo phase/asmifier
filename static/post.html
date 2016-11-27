@@ -7,14 +7,14 @@
     </head>
     <body class="hack dark-grey container">
         <h1>ASMifier</h1>
-        <p>site by <a href="https://github.com/phase">Jadon Fowler</a></p>
+        <p>site by <a href="https://github.com/phase">Jadon Fowler</a>, open sourced on <a href="https://github.com/phase/asmifier">GitHub</a></p>
         <form class="form" method="post" action="/" style="width:100%">
             <fieldset class="form-group">
                 <label for="className">Class Name</label>
                 <input id="className" name="className" type="text" placeholder="MainClass" value="$CLASS_NAME$" class="form-control">
             </fieldset>
             <fieldset class="form-group form-textarea">
-                <textarea name="code" rows="30" cols="40" class="form-control" style="width:100%">$INPUT$</textarea>
+                <textarea name="code" placeholder="public class MainClass { int test = 0; }" rows="30" cols="40" class="form-control" style="width:100%">$INPUT$</textarea>
             </fieldset>
             <div class="form-actions">
                 <button type="submit" class="btn btn-primary btn-block">Submit</button>
