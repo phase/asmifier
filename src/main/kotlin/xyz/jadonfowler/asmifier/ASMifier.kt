@@ -35,13 +35,14 @@ class ASMVerticle() : AbstractVerticle() {
 
         router.post("/").handler { r ->
             // Get values from form
-            val className = r.request().getParam("className")
+            val className = r.request().getParam("className").replace('.', '/')
             val code = r.request().getParam("code")
 
             // Save code to file
             val codeFile = File("bin/$className.java")
+            val classFile = File("bin/$className.class")
             if (!codeFile.exists()) {
-                File("bin/").mkdir()
+                codeFile.parentFile.mkdirs()
                 codeFile.createNewFile()
             }
             codeFile.printWriter().use { out -> out.write(code) }
@@ -55,17 +56,19 @@ class ASMVerticle() : AbstractVerticle() {
             val output: String
 
             if (rc == 0) {
-                // ASMifier the class file
-                val cr = ClassReader(FileInputStream("bin/$className.class"))
-                val asmStream = ByteArrayOutputStream()
-                cr.accept(TraceClassVisitor(null, ASMifier(), PrintWriter(asmStream)), 2)
-                var depth = 0
-                output = asmStream.toString().split("\n").map {
-                    if (it.trim().endsWith("}")) depth--
-                    val s = " ".repeat(depth * 4) + it
-                    if (it.trim().endsWith("{")) depth++
-                    s
-                }.joinToString("\n")
+                // ASMifier the class file`
+                if (classFile.exists()) {
+                    val cr = ClassReader(classFile.inputStream())
+                    val asmStream = ByteArrayOutputStream()
+                    cr.accept(TraceClassVisitor(null, ASMifier(), PrintWriter(asmStream)), 2)
+                    var depth = 0
+                    output = asmStream.toString().split("\n").map {
+                        if (it.trim().endsWith("}")) depth--
+                        val s = " ".repeat(depth * 4) + it
+                        if (it.trim().endsWith("{")) depth++
+                        s
+                    }.joinToString("\n")
+                } else output = "Couldn't find ${classFile.name}"
             } else {
                 // javac returned with an error, return the output & error streams
                 output = outputStream.toString() + "\n\n" + errorStream.toString()
