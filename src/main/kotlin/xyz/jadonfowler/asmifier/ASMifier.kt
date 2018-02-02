@@ -68,8 +68,8 @@ class ASMVerticle() : AbstractVerticle() {
                         if (it.trim().endsWith("{")) depth++
                         s
                     }.joinToString("\n")
-                    output = output.replace("<", "&lt")
-                    output = output.replace(">", "&gt")
+                    output = output.replace("<", "&lt;")
+                    output = output.replace(">", "&gt;")
                 } else output = "Couldn't find ${classFile.name}"
             } else {
                 // javac returned with an error, return the output & error streams
