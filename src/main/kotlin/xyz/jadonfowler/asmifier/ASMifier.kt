@@ -53,7 +53,7 @@ class ASMVerticle() : AbstractVerticle() {
             val errorStream = ByteArrayOutputStream()
             val rc = javac.run(null, outputStream, errorStream, "bin/$className.java", "-d", "bin/")
 
-            val output: String
+            var output: String
 
             if (rc == 0) {
                 // ASMifier the class file`
@@ -68,6 +68,8 @@ class ASMVerticle() : AbstractVerticle() {
                         if (it.trim().endsWith("{")) depth++
                         s
                     }.joinToString("\n")
+                    output = output.replace("<", "&lt;")
+                    output = output.replace(">", "&gt;")
                 } else output = "Couldn't find ${classFile.name}"
             } else {
                 // javac returned with an error, return the output & error streams
