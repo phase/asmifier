@@ -2,6 +2,7 @@ package xyz.jadonfowler.asmifier
 
 import io.vertx.core.AbstractVerticle
 import io.vertx.core.Future
+import io.vertx.core.Promise
 import io.vertx.core.Vertx
 import io.vertx.ext.web.Router
 import io.vertx.ext.web.handler.BodyHandler
@@ -10,7 +11,6 @@ import org.objectweb.asm.util.ASMifier
 import org.objectweb.asm.util.TraceClassVisitor
 import java.io.ByteArrayOutputStream
 import java.io.File
-import java.io.FileInputStream
 import java.io.PrintWriter
 import javax.tools.ToolProvider
 
@@ -20,8 +20,8 @@ fun main(args: Array<String>) {
 
 class ASMVerticle() : AbstractVerticle() {
 
-    val get_html = File("static/get.html").readLines().joinToString("\n")
-    val post_html = File("static/post.html").readLines().joinToString("\n")
+    private val getTemplate = File("static/get.html").readLines().joinToString("\n")
+    private val postTemplate = File("static/post.html").readLines().joinToString("\n")
 
     fun createRouter(): Router {
         val router = Router.router(vertx)
@@ -30,7 +30,7 @@ class ASMVerticle() : AbstractVerticle() {
         router.route().handler(BodyHandler.create())
 
         router.get("/").handler { r ->
-            r.response().end(get_html)
+            r.response().end(getTemplate)
         }
 
         router.post("/").handler { r ->
@@ -81,7 +81,7 @@ class ASMVerticle() : AbstractVerticle() {
             File("bin/$className.class").delete()
 
             // Build response
-            val response = post_html
+            val response = postTemplate
                     .replace("\$CLASS_NAME\$", className)
                     .replace("\$INPUT\$", code)
                     .replace("\$OUTPUT\$", output)
@@ -98,12 +98,15 @@ class ASMVerticle() : AbstractVerticle() {
         val port = if (portValue.isNullOrEmpty()) 8080 else portValue.toInt()
         vertx
                 .createHttpServer()
-                .requestHandler({ r -> router.accept(r) })
+                .requestHandler(router)
                 .listen(port) { result ->
-                    if (result.succeeded()) fut.complete()
-                    else fut.fail(result.cause())
+                    if (result.succeeded()) {
+                        Promise.succeededPromise<Void>()
+                        println("Server started: http://localhost:$port/")
+                    }
+                    else Promise.failedPromise<Void>(result.cause());
                 }
-        println("Server started: http://localhost:$port/")
+
     }
 
 }
