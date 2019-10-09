@@ -101,10 +101,8 @@ class ASMVerticle() : AbstractVerticle() {
                 .requestHandler(router)
                 .listen(port) { result ->
                     if (result.succeeded()) {
-                        Promise.succeededPromise<Void>()
                         println("Server started: http://localhost:$port/")
-                    }
-                    else Promise.failedPromise<Void>(result.cause());
+                    } else result.cause().printStackTrace()
                 }
 
     }
