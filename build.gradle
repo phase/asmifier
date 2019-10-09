@@ -2,7 +2,7 @@ group 'xyz.jadonfowler'
 version '0.0.0'
 
 buildscript {
-    ext.kotlin_version = '1.2.21-release-IJ2017.3-1'
+    ext.kotlin_version = '1.3.50'
 
     repositories {
         mavenCentral()
@@ -12,8 +12,13 @@ buildscript {
     }
 }
 
+
+
+
 apply plugin: 'kotlin'
 apply plugin: 'application'
+
+
 
 mainClassName = "xyz.jadonfowler.asmifier.ASMifierKt"
 
@@ -24,8 +29,12 @@ repositories {
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    compile "io.vertx:vertx-core:3.3.3"
-    compile "io.vertx:vertx-web:3.3.3"
-    compile "org.ow2.asm:asm:5.0.3"
-    compile "org.ow2.asm:asm-util:5.0.3"
+    compile "io.vertx:vertx-core:3.8.1"
+    compile "io.vertx:vertx-web:3.8.1"
+    compile "org.ow2.asm:asm:7.2"
+    compile "org.ow2.asm:asm-util:7.2"
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = '1.8'
 }
